@@ -1,13 +1,21 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import axios from "axios"
 import "./cyborg_bootstrap.css"
 
 function App() {
-  const [pokes, setPokes] = useState([])
+  const [pokes, setPokes] = useState(null)
+  const [show, setShow] = useState(false)
 
-  const handleClick = () => {
-    fetch("https://pokeapi.co/api/v2/pokemon?limit=1200")
-      .then((response) => response.json())
-      .then((response) => setPokes(response.results))
+  useEffect(() => {
+    axios
+      .get("https://pokeapi.co/api/v2/pokemon?limit=1200")
+      .then((response) => {
+        setPokes(response.data.results)
+      })
+  }, [])
+
+  const handleClick = (e) => {
+    setShow(!show)
   }
 
   return (
@@ -18,7 +26,7 @@ function App() {
             Get Pokémon
           </button>
           <div className="row row-cols-6 g-3">
-            {pokes.length &&
+            {show &&
               pokes.map((poke, index) => {
                 return (
                   <div className="col btn btn-info me-3" key={index}>
